@@ -24,3 +24,11 @@
 
 Игра должна корректно работать от первого хода до последнего. 
 В результате обязательно должен выявляться победитель.
+
+## <font color="#tomato">Полезные ссылки</font>
+
+[Работа с файлами в C++. Часть 1 – Библиотека fstream](https://purecodecpp.com/archives/2751)
+
+[Разделить строку в C++ с помощью разделителя](https://www.techiedelight.com/ru/split-string-cpp-using-delimiter/)
+
+[Удалить начальные и конечные пробелы из строки в C++](https://www.techiedelight.com/ru/remove-leading-and-trailing-spaces-from-a-string-in-cpp/)
