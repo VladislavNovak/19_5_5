@@ -118,6 +118,17 @@ bool readFileToVectorOfVectors(const char* pathName, vector<vector<string>> &dat
     return isFileReadSuccessfully;
 }
 
+// Возвращает случайный номер вопроса. Или -1 если такой номер уже присутствует в numbersOfPrevQuestions
+int getRandomNumberOfCurrentQuestion(vector<string> const &dataQuestions, vector<int> const &numbersOfPrevQuestions) {
+    int questionNumber = getRandomIntInRange(0, (int)dataQuestions.size() - 1);
+    auto it = std::find(numbersOfPrevQuestions.begin(), numbersOfPrevQuestions.end(), questionNumber);
+    return (it != numbersOfPrevQuestions.cend()) ? -1 : questionNumber;
+}
+
+void printStatus(int scoresOfPlayer, int scoresOfViewers) {
+    printf("Текущий счёт:\nИгрок: %i\nЗрители: %i\n", scoresOfPlayer, scoresOfViewers);
+}
+
 void printWarning(const char* currentPath) {
     printf("%s не обнаружен.\nОн должен находиться в директории с исполняемым файлом!\n", currentPath);
 }
@@ -128,11 +139,22 @@ int main() {
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-    const int NUMBER_OF_ROUNDS = 13;
+    // Допустимое количество вопросов
+    const int NUMBER_OF_QUESTION_SECTORS = 13;
+    // Максимальное количество баллов
+    const int MAX_SCORE = 6;
+
+    // Содержит номера уже сыгравших вопросов
     vector<int> numbersOfPrevQuestions;
+    // Пути к необходимым файлам
     vector<string> paths = { R"(..\test_questions.txt)", R"(..\test_answers.txt)" };
+    // По итогу прочтения файла будет содержать массив всех вопросов
     vector<string> dataQuestions;
+    // По итогу прочтения файла будет содержать массив массивов всех ответов
     vector<vector<string>> dataAnswers;
+
+    int scoresOfPlayer = 0;
+    int scoresOfViewers = 0;
 
     bool isQuestionsReadSuccessfully = readFileToVector(paths[0].c_str(), dataQuestions);
     bool isAnswersReadSuccessfully = readFileToVectorOfVectors(paths[1].c_str(), dataAnswers);
@@ -147,10 +169,14 @@ int main() {
         return 1;
     }
 
-    while (numbersOfPrevQuestions.size() < NUMBER_OF_ROUNDS) {
-        int questionNumber = getRandomIntInRange(0, (int)dataQuestions.size() - 1);
-        auto it = std::find(numbersOfPrevQuestions.begin(), numbersOfPrevQuestions.end(), questionNumber);
-        if (it != numbersOfPrevQuestions.cend()) continue;
+    if (dataQuestions.empty() || dataAnswers.empty()) {
+        std::cout << "Проверьте файлы на корректность данных" << std::endl;
+        return 1;
+    }
+
+    while (numbersOfPrevQuestions.size() < NUMBER_OF_QUESTION_SECTORS) {
+        int questionNumber = getRandomNumberOfCurrentQuestion(dataQuestions, numbersOfPrevQuestions);
+        if (questionNumber == -1) continue;
 
         printSuggestion(questionNumber, dataQuestions, dataAnswers);
 
@@ -161,17 +187,28 @@ int main() {
         bool isChoiceRight = dataAnswers[questionNumber][userAnswer] == correctAnswer;
 
         if (isChoiceRight) {
+            ++scoresOfPlayer;
             std::cout << "Вы сделали верный выбор! Вам добавляется балл" << std::endl;
+            printStatus(scoresOfPlayer, scoresOfViewers);
         } else {
+            ++scoresOfViewers;
             std::cout << "Вы сделали неверный выбор! Балл уходит зрителям" << std::endl;
-            std::cout << "Верный ответ: (" << dataAnswers[questionNumber][0] << ") " << correctAnswer << std::endl;
+            printf("Верный ответ: (%s) %s\n", dataAnswers[questionNumber][0].c_str(), correctAnswer.c_str());
+            printStatus(scoresOfPlayer, scoresOfViewers);
         }
 
         numbersOfPrevQuestions.push_back(questionNumber);
 
         system("pause");
         system("cls");
+
+        // Прерываем если один из игроков набрал MAX_SCORE
+        if (scoresOfPlayer == MAX_SCORE || scoresOfViewers == MAX_SCORE) break;
     }
+
+    std::cout << "Текущий счёт:\n";
+    printf("Игрок %s со счетом: %i\n", ((scoresOfPlayer > scoresOfViewers) ? "победил" : "проиграл"), scoresOfPlayer);
+    printf("Зрители %s со счетом: %i\n", ((scoresOfPlayer < scoresOfViewers) ? "победили" : "проиграли"), scoresOfViewers);
 
     std::cout << "Игра закончена!" << std::endl;
 }

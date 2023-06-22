@@ -32,7 +32,8 @@
 - `test_questions.txt` содержит вопросы
 - `test_answers.txt` содержит ответы. Первым элементом идет номер правильного ответа, далее - идут по четыре ответа.
 
-Таким образом, вопрос и ответ будет находиться каждый в своём файле, но в соответствующей друг другу строчке.
+Таким образом, вопрос и ответ будет находиться каждый в своём файле, но в соответствующей друг другу строчке. 
+Главное, чтобы общее количество вопросов и ответов совпадало
 
 ---
 
@@ -46,7 +47,19 @@
 ```text
 [questionNumber][string positionOfCorrectAnswer]
 ```
-В зависимости от этого будут начисляться баллы
+В зависимости от этого будут начисляться баллы.
+
+---
+
+Информацию о функциях: 
+`isIncludes`, 
+`getJoinRange`, 
+`getUserChar`, 
+`getRandomIntInRange`, 
+`trim`, 
+`readFileToVector`, 
+`readFileToVectorOfVectors` 
+можно найти в репозитории [16_6_4](https://github.com/VladislavNovak/16_6_4)
 
 ## <font color="#tomato">Полезные ссылки</font>
 
@@ -55,3 +68,5 @@
 [Разделить строку в C++ с помощью разделителя](https://www.techiedelight.com/ru/split-string-cpp-using-delimiter/)
 
 [Удалить начальные и конечные пробелы из строки в C++](https://www.techiedelight.com/ru/remove-leading-and-trailing-spaces-from-a-string-in-cpp/)
+
+[Найти индекс элемента в векторе в C++](https://www.techiedelight.com/ru/find-index-element-vector-cpp/)
